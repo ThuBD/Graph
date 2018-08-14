@@ -1,0 +1,64 @@
+#graphsService {
+  font-family: 'Muli', sans-serif;
+}
+
+.graphsHead {
+  padding-bottom : 10px;
+  font-size : 25px;
+}
+
+.chartDiv {
+  position: absolute;
+  width : 800px;
+  height : 450px;
+  z-index : 1;
+  padding-top : 0px;
+  border-top : 1px solid black;
+}
+
+.chartContainer {
+  position : relative;
+  width : 700px;
+  height : 300px;
+  z-index : 1;
+  float : left;
+}
+
+.ylabel {
+  position : relative;
+  z-index : 1;
+  float : left;
+  font-size : 12px;
+  padding-top : 28px;
+}
+
+.xs {
+  position: absolute;
+  left : 50px;
+  z-index : 1;
+  float : left;
+  padding-left : 30px;
+  padding-top : 30px;
+  padding-bottom : 25px;
+  padding-right : 25px;
+}
+
+.axes {
+  position : relative;
+  height : 100%;
+  z-index : 1;
+}
+
+.xlabel {
+  position : relative;
+  z-index : 1;
+  float : left;
+  left : 52px;
+  top : 385px;
+  font-size : 12px;
+}
+
+#attachDescription {
+  position : relative;
+  top : 430px;
+}
