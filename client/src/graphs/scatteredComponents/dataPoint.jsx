@@ -39,7 +39,7 @@ class DataPoint extends Component {
   render () {
     return (
       <g onMouseEnter={this.enterHandler} onMouseLeave={this.leaveHandler} transform={"translate(" + (this.state.x) + ", " + (this.state.y) + ")"}>
-        <circle r="9" fill="#DC8C8C" className={"dataPoint" + this.props.ind + ', estCircle'} />
+        <circle r="9" fill="#63c9ff" className={"dataPoint" + this.props.ind + ', estCircle'} />
       </g>
     )
   }
