@@ -29,6 +29,7 @@
   z-index : 1;
   float : left;
   font-size : 12px;
+  top : 5px;
   padding-top : 28px;
 }
 
@@ -38,7 +39,7 @@
   z-index : 1;
   float : left;
   padding-left : 30px;
-  padding-top : 30px;
+  padding-top : 35px;
   padding-bottom : 25px;
   padding-right : 25px;
 }

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import moment from 'moment'
 import YAxis from './yAxis.jsx';
 import XAxis from './xAxis.jsx';
+import Display from './display.jsx';
 // import DataPoints from './dataPoints.jsx';
 // import Description from './description.jsx';
 // import BlankDescription from './blankDescription.jsx';
@@ -15,9 +16,11 @@ class HasApplications extends Component {
       datesApplied : [],
       datesHeard : [],
       yAxisValues : [],
+      yValues : [],
       xAxisValues : [],
-      lastDay : null,
-      trigger : false,
+      lastDay : null, // in actual practice, this will be collected by getting current date on use. for now, last heard was arbitraily chosen. 
+      xTrigger : false,
+      yTrigger : false,
       yMin : null,
       yRange : null,
       xMin : null,
@@ -45,7 +48,7 @@ class HasApplications extends Component {
     let currentAvg = 0;
     let currentDay = null;
     let currentMoment = null;
-    let derivatives;
+    let derivatives = [];
     let firstDay = new Date(this.state.xAxisValues[0]);
     let lastDay = this.state.lastDay;
     let firstMoment = moment([firstDay.getFullYear(), firstDay.getMonth(), firstDay.getDate()]);
@@ -54,26 +57,60 @@ class HasApplications extends Component {
     let eachAppDay = this.state.datesApplied.map((element, index) => {
       currentMoment = moment([element.getFullYear(), element.getMonth(), element.getDate()]);
       return currentMoment.diff(firstMoment, 'days');
-    }).sort((a, b) => {return a - b})
-    console.log(dayRange);
-    console.log(eachAppDay);
-    for (let i = 0; i <= dayRange; i++) {
-      this.produceDerivative();
-    }
+    }).sort((a, b) => {return a - b});
+    let yValues = this.produceDerivative(eachAppDay);
+    let yMax = yValues.reduce((accum, element) => {
+      if (element > accum) { return element } else { return accum }
+    });
+    yMax = Math.floor(yMax * 1.25) + (4 - (Math.floor(yMax * 1.25)) % 4);
+    let yInterval = yMax / 4;
+    let yArray = [0, yInterval, 2 * yInterval, 3 * yInterval, 4 * yInterval];
+    return [yArray, yValues];
   }
 
-  produceDerivative () {
+  produceDerivative (eachApp) {
     // return a single calculated y value, which will be pushed to derivatives array
     // need Apps count from last 7 days
-
-
+    let current = 0;
+    let count = 0;
+    let output1 = [];
+    let output2 = [];
+    eachApp.forEach((element, index) => {
+      if (current === element) {
+        count++;
+      } else if (element - current === 1) {
+        output1.push(count);
+        count = 1;
+        current = element;
+      } else {
+        output1.push(0);
+        current = element;
+      }
+    });
+    output1.push(count);
+    let n;
+    for (let i = 0; i < output1.length; i++) {
+      n = 6;
+      while (i - n < 0) {
+        n--;
+      }
+      // console.log(output1.slice(i - n, i + 1))
+      output2.push(output1.slice(i - n, i + 1).reduce((accum, elem) => {
+        return (accum + elem)
+      }));
+    };
+    n = 6;
+    let last = output1.length;
+    while (last - n < last) {
+      output2.push(output1.slice(last - n, last).reduce((accum, elem) => {
+        return (accum + elem)
+      }));
+      // console.log(output1.slice(last - n, last));
+      n--;
+    };
+    return output2;
     // return derivatives
   }
-
-  weeklyAverage () {
-
-  }
-
 
   produceXAxisArray () {
     // make [] that goes into xAxisValues
@@ -98,15 +135,11 @@ class HasApplications extends Component {
     let dayRange = maxMoment.diff(minMoment, 'days');
 
     // make sure data are more than a day apart
-    if (dayRange > 1) {
-      this.renderComponentsIfMetCondition();
-    }
-
     let numberOfTicks = this.decideSizeOfXAxis(dayRange);
 
     let msInterval = Math.round(dayRange / numberOfTicks) * 86400000;
     let ind = 0;
-    let upperLimit = maxX.getTime() + msInterval / 3;
+    let upperLimit = maxX.getTime() + msInterval / 10;
 
     while (output[ind].getTime() < upperLimit) {
       output.push(new Date(output[ind].getTime() + msInterval));
@@ -117,11 +150,6 @@ class HasApplications extends Component {
       return ((element.getMonth() + 1) + '/' + element.getDate() + '/' + element.getFullYear());
     });
     return [output, new Date(output[0]), dayRange, new Date(output[output.length - 1]), maxX];
-  }
-
-
-  decideSizeOfYAxis (difference) {
-    // use this set of rules in produceLYAxisArray
 
   }
 
@@ -157,6 +185,20 @@ class HasApplications extends Component {
 
   renderComponentsIfMetCondition () {
     // based on the this.state.showAccum and others, render graph and pass the booleans down.
+     ReactDOM.render(
+        <YAxis
+          values={this.state.yAxisValues}
+        />
+      , document.getElementById('attachYAxis'));
+
+     ReactDOM.render(
+        <Display 
+          yValues={this.state.yValues}
+          yMax={this.state.yAxisValues[0]}
+          dayRange={this.state.xRange}
+        />
+      , document.getElementById('attachDisplay'));
+
     ReactDOM.render(
         <XAxis
           values={this.state.xAxisValues}
@@ -182,12 +224,23 @@ class HasApplications extends Component {
 
   componentDidUpdate () {
     let xAxisValues = this.produceXAxisArray();
-    if (!this.state.trigger) {
-      this.setState({ xAxisValues : xAxisValues[0], trigger : true, xMin : xAxisValues[1], xMax : xAxisValues[3], xRange : xAxisValues[2], lastDay : xAxisValues[4]});
+    if (!this.state.xTrigger) {
+      this.setState({ xAxisValues : xAxisValues[0], xTrigger : true, xMin : xAxisValues[1], xMax : xAxisValues[3], xRange : xAxisValues[2], lastDay : xAxisValues[4]});
     }
+    
     if (this.state.lastDay !== null) {
+      if (!this.state.yTrigger) {
       this.produceXAxisArray();
-      this.produceYAxisArray();
+      let yAxisValues = this.produceYAxisArray();
+        if (yAxisValues !== undefined) {
+          let yAxisValuesReversed = yAxisValues[0].reverse();
+          this.setState({ yAxisValues : yAxisValuesReversed, yMin : yAxisValues[0][0], yRange : yAxisValues[0].length, yValues : yAxisValues[1], yTrigger : true });
+        }
+      
+      }
+      if (this.state.yRange > 0 && this.state.xRange > 0) {
+        this.renderComponentsIfMetCondition();
+      }
     };
   }
 
@@ -196,14 +249,14 @@ class HasApplications extends Component {
     return (
       <section id="lineComponent">
         <header className="graphsHead">
-        Number of Applications
+        Performance Chart
         </header>
         <div className="chartDiv">
           <div className="chartContainer">
             <div className="innerChartContainer">
               <div className="axes" id="errorHere">
-                <div id="attachYAxis">Required to applications on more than two separate days!</div>
-                <div id="attachDataPoints"></div>
+                <div id="attachYAxis">Required to have applications on more than two separate days!</div>
+                <div id="attachDisplay"></div>
                 <div id="attachXAxis"></div>
               </div>
             </div>
