@@ -43,8 +43,8 @@ class Display extends Component {
   render () {
     return (
       <div>
-        <svg className="xs" width="700" height="300" onMouseMove={this.trackerMoveHandler}>
-          <path id='deriveShade' opacity='0.7' stroke='white' fill='white' d={this.state.shade} onMouseEnter={this.enterHandler} onMouseLeave={this.leaveHandler} ></path>
+        <svg className="xs" width="700" height="300" onMouseMove={this.trackerMoveHandler} onMouseLeave={this.trackerLeaveHandler}>
+          <path id='deriveShade' opacity='0' stroke='white' fill='white' d={this.state.shade} onMouseEnter={this.enterHandler} onMouseLeave={this.leaveHandler} ></path>
           <path id='derivLine' stroke='#636363' fill='none' d={this.state.line}></path>
           <CirclePoint 
             x={this.state.circleX}
@@ -59,20 +59,24 @@ class Display extends Component {
 
   enterHandler(e) {
     document.getElementById('deriveShade').style.fill = '#63c9ff';
-    document.getElementById('deriveShade').style.stroke = '#636363';
+    document.getElementById('deriveShade').style.stroke = 'black';
+    document.getElementById('deriveShade').style.opacity = '0.7';
   }
 
   leaveHandler(e) {
     document.getElementById('deriveShade').style.fill = 'white';
     document.getElementById('deriveShade').style.stroke = 'white';
+    document.getElementById('deriveShade').style.opacity = '0';
   }
 
   trackerMoveHandler(e) {
-    this.setState({trackerX : e.screenX - 58});
-    console.log(e.screenX - 58 * (704 / 632));
+    // this.setState((e.screenX - 57) * (704 / 630));
+    document.getElementById('circleTrackerColor').style.width = `${(e.screenX - 57) * (704 / 630)}px`;
+    // this.setState
   }
 
   trackerLeaveHandler(e) {
+    document.getElementById('circleTrackerColor').style.width = '0px';
   }
 
 }

@@ -71,7 +71,6 @@
   position : absolute;
   top : 6.5mm;
   left : 72px;
-  background-color : green;
   width : 704px;
   height : 79.4mm;
   z-index : 0;
@@ -82,7 +81,7 @@
   top : 6.5mm;
   left : 72px;
   background-color : #e2e2e2;
-  width : 100px;
+  width : 0px;
   height : 79.4mm;
   z-index : 0;
 }
