@@ -6,9 +6,12 @@ class Display extends Component {
     super(props);
     this.enterHandler = this.enterHandler.bind(this);
     this.leaveHandler = this.leaveHandler.bind(this);
+    this.trackerMoveHandler = this.trackerMoveHandler.bind(this);
+    this.trackerLeaveHandler = this.trackerLeaveHandler.bind(this);
     this.state = {
       line : '',
       shade : '',
+      trackerX : null,
       circleX : null,
       circleY : null
     }
@@ -39,27 +42,37 @@ class Display extends Component {
 
   render () {
     return (
-      <svg className="xs" width="700" height="300">
-        <path id='deriveShade' stroke='white' fill='white' d={this.state.shade} onMouseEnter={this.enterHandler} onMouseLeave={this.leaveHandler} ></path>
-        <path id='derivLine' stroke='#636363' fill='none' d={this.state.line}></path>
-        <CirclePoint 
-          x={this.state.circleX}
-          y={this.state.circleY}
-        />
-      </svg>
+      <div>
+        <svg className="xs" width="700" height="300" onMouseMove={this.trackerMoveHandler}>
+          <path id='deriveShade' opacity='0.7' stroke='white' fill='white' d={this.state.shade} onMouseEnter={this.enterHandler} onMouseLeave={this.leaveHandler} ></path>
+          <path id='derivLine' stroke='#636363' fill='none' d={this.state.line}></path>
+          <CirclePoint 
+            x={this.state.circleX}
+            y={this.state.circleY}
+          />
+        </svg>
+        <div id="circleTracker"></div>
+        <div id="circleTrackerColor"></div>
+      </div>
     );
   }
 
   enterHandler(e) {
     document.getElementById('deriveShade').style.fill = '#63c9ff';
     document.getElementById('deriveShade').style.stroke = '#636363';
-    console.log('in');
   }
 
   leaveHandler(e) {
     document.getElementById('deriveShade').style.fill = 'white';
     document.getElementById('deriveShade').style.stroke = 'white';
-    console.log('out');
+  }
+
+  trackerMoveHandler(e) {
+    this.setState({trackerX : e.screenX - 58});
+    console.log(e.screenX - 58 * (704 / 632));
+  }
+
+  trackerLeaveHandler(e) {
   }
 
 }
