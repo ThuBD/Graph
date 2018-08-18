@@ -33,7 +33,8 @@ class HasApplications extends Component {
       showCompany : null,
       showDate : null,
       showSalary : null,
-      showMore : null
+      showMore : null,
+      shaded : false
     }
   }
 
@@ -190,14 +191,24 @@ class HasApplications extends Component {
           values={this.state.yAxisValues}
         />
       , document.getElementById('attachYAxis'));
-
-     ReactDOM.render(
+     if (!this.state.shaded) { 
+      ReactDOM.render(
         <Display 
           yValues={this.state.yValues}
           yMax={this.state.yAxisValues[0]}
           dayRange={this.state.xRange}
         />
       , document.getElementById('attachDisplay'));
+     } else {
+      ReactDOM.render(
+        <Shaded 
+          yValues={this.state.yValues}
+          yMax={this.state.yAxisValues[0]}
+          dayRange={this.state.xRange}
+        />
+      , document.getElementById('attachDisplay'));
+     }
+     
 
     ReactDOM.render(
         <XAxis

@@ -9,6 +9,7 @@
 
 .chartDiv {
   position: absolute;
+  left : -10px;
   width : 800px;
   height : 450px;
   z-index : 1;
@@ -29,7 +30,8 @@
   z-index : 1;
   float : left;
   font-size : 12px;
-  top : 5px;
+  top : -5px;
+  left : 15px;
   padding-top : 28px;
 }
 
@@ -38,10 +40,12 @@
   left : 50px;
   z-index : 1;
   float : left;
-  padding-left : 30px;
-  padding-top : 35px;
+  padding-left : 25px;
+  padding-top : 25px;
   padding-bottom : 25px;
   padding-right : 25px;
+  outline : 0.1px solid black;
+  outline-offset : -25px;
 }
 
 .axes {
@@ -54,8 +58,8 @@
   position : relative;
   z-index : 1;
   float : left;
-  left : 52px;
-  top : 385px;
+  left : 48px;
+  top : 355px;
   font-size : 12px;
 }
 
