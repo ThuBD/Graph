@@ -13,7 +13,8 @@ class Display extends Component {
       shade : '',
       trackerX : null,
       circleX : null,
-      circleY : null
+      circleY : null,
+      coordinates : []
     }
   }
 
@@ -23,17 +24,19 @@ class Display extends Component {
     let X;
     let Y;
     let index;
+    let coordinates = [];
     for (let i = 0; i < this.props.yValues.length; i++) {
       X = 700 * (i / this.props.dayRange);
       Y = 300 - (300 * this.props.yValues[i] / this.props.yMax)
       lineString += `${700 * (i / this.props.dayRange)} ${300 - (300 * this.props.yValues[i] / this.props.yMax) } `;
+      coordinates.push({X : X, Y : Y});
     }
     for (let i = 0; i < this.props.yValues.length; i++) {
       shadeString += `${700 * (i / this.props.dayRange)} ${300 - (300 * this.props.yValues[i] / this.props.yMax) } `;
       index = i;;
     }
     shadeString += `${700 * (index / this.props.dayRange)} 300`;
-    this.setState({line : lineString, shade : shadeString, circleX : X, circleY : Y});
+    this.setState({line : lineString, shade : shadeString, circleX : X, circleY : Y, coordinates : coordinates});
 
   }
 
@@ -72,6 +75,14 @@ class Display extends Component {
   trackerMoveHandler(e) {
     // this.setState((e.screenX - 57) * (704 / 630));
     document.getElementById('circleTrackerColor').style.width = `${(e.screenX - 57) * (704 / 630)}px`;
+    let selectedDay = Math.round(this.props.dayRange * (e.screenX - 57) / 630);
+
+    if (selectedDay <= this.props.yValues.length - 1) {
+      this.setState({circleX : this.state.coordinates[selectedDay].X, circleY : this.state.coordinates[selectedDay].Y});
+    }
+
+   
+
     // this.setState
   }
 
