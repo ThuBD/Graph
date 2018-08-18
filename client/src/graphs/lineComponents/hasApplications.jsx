@@ -191,7 +191,7 @@ class HasApplications extends Component {
           values={this.state.yAxisValues}
         />
       , document.getElementById('attachYAxis'));
-     if (!this.state.shaded) { 
+
       ReactDOM.render(
         <Display 
           yValues={this.state.yValues}
@@ -199,16 +199,6 @@ class HasApplications extends Component {
           dayRange={this.state.xRange}
         />
       , document.getElementById('attachDisplay'));
-     } else {
-      ReactDOM.render(
-        <Shaded 
-          yValues={this.state.yValues}
-          yMax={this.state.yAxisValues[0]}
-          dayRange={this.state.xRange}
-        />
-      , document.getElementById('attachDisplay'));
-     }
-     
 
     ReactDOM.render(
         <XAxis
