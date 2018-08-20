@@ -4,6 +4,7 @@ import moment from 'moment'
 import YAxis from './yAxis.jsx';
 import XAxis from './xAxis.jsx';
 import Display from './display.jsx';
+import Description from './description.jsx';
 // import DataPoints from './dataPoints.jsx';
 // import Description from './description.jsx';
 // import BlankDescription from './blankDescription.jsx';
@@ -26,15 +27,9 @@ class HasApplications extends Component {
       xMin : null,
       xMax : null,
       xRange : null,
-      showRate : true,
-      showInProc : false,
-      showAccept : false,
-      showDescription : false,
+      showWeeklySum : null,
       showCompany : null,
-      showDate : null,
-      showSalary : null,
-      showMore : null,
-      shaded : false
+      showDate : null
     }
   }
 
@@ -195,8 +190,10 @@ class HasApplications extends Component {
       ReactDOM.render(
         <Display 
           yValues={this.state.yValues}
+          xAxisValues={this.state.xAxisValues}
           yMax={this.state.yAxisValues[0]}
           dayRange={this.state.xRange}
+          mainGraphComp={this}
         />
       , document.getElementById('attachDisplay'));
 
@@ -205,6 +202,8 @@ class HasApplications extends Component {
           values={this.state.xAxisValues}
         />
       , document.getElementById('attachXAxis'));
+
+    
   }
 
   componentDidMount () {
@@ -243,6 +242,13 @@ class HasApplications extends Component {
         this.renderComponentsIfMetCondition();
       }
     };
+
+      ReactDOM.render(
+        <Description
+          date={this.state.showDate}
+          weeklySum={this.state.showWeeklySum}
+        />
+      , document.getElementById('attachDescription'));
   }
 
   // renders entire section with YAxis, DataPoints, XAxis, and Descriptions as subcomponents
