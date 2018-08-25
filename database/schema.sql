@@ -1,6 +1,7 @@
-CREATE DATABASE AppliTrees;
+DROP DATABASE if exists appcounts
+CREATE DATABASE appcounts;
 
-\c AppliTrees;
+\c appcounts;
 
 CREATE TABLE users (
   id serial,
@@ -9,13 +10,12 @@ CREATE TABLE users (
   user_email text,
   user_address text,
   created_at text,
-  total_applied smallint,
-  date_firstapp text,
-  jobs_id integer[]
-)
+  date_firstapp text
+);
 
 CREATE TABLE jobs (
   id bigserial,
+  user_id integer,
   company_name text,
   date_applied text,
   date_heard text,
@@ -29,4 +29,7 @@ CREATE TABLE jobs (
   cover_letter text,
   personal_rating DECIMAL(2,1),
   display boolean
-)
+);
+
+COPY users FROM '/Users/blbb1111/Documents/ThuBD/Graph/database/csvs/users/users.txt' DELIMITER ',' CSV;
+
