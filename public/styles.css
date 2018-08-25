@@ -85,3 +85,20 @@
   height : 79.4mm;
   z-index : 0;
 }
+
+#tooltip {
+  display : none;
+  z-index : 2;
+  background-color : #e5e5e5;
+  position: absolute;
+  width : 100px;
+  height : 30px;
+  font-size : 8px;
+}
+
+#tooltipArrow {
+  position : absolute;
+  top : 22px;
+  left : 2px;
+  fill : #e5e5e5;
+}

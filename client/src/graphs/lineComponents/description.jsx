@@ -16,6 +16,7 @@ class Description extends Component {
       <div>
         <div>Date : {this.props.date}</div>
         <div>WeeklySum : {this.props.weeklySum}</div>
+        <div>{this.props.accumulated}/{this.props.total}</div>
       </div>
       
     ) 

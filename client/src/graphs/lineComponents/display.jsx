@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import CirclePoint from './circlePoint.jsx';
-import moment from 'moment'
+import moment from 'moment';
+import Tooltip from './tooltip.jsx';
+import BlankTooltip from './blankTooltip.jsx'
 
 class Display extends Component {
   constructor(props) {
     super(props);
+    this.tooltipHandler = this.tooltipHandler.bind(this);
     this.enterHandler = this.enterHandler.bind(this);
     this.leaveHandler = this.leaveHandler.bind(this);
     this.trackerMoveHandler = this.trackerMoveHandler.bind(this);
@@ -46,10 +50,6 @@ class Display extends Component {
       index = i;;
     }
     shadeString += `${700 * (index / range)} 300`;
-    
-    
-    console.log(range);
-
 
     this.setState({line : lineString, shade : shadeString, circleX : X, circleY : Y, coordinates : coordinates, firstDate : new Date(this.props.mainGraphComp.state.xAxisValues[0]), range : range});
 
@@ -62,8 +62,13 @@ class Display extends Component {
     return (
       <div>
         <svg className="xs" width="700" height="300" onMouseMove={this.trackerMoveHandler} onMouseLeave={this.trackerLeaveHandler}>
-          <path id='deriveShade' opacity='0' stroke='white' fill='white' d={this.state.shade} onMouseEnter={this.enterHandler} onMouseLeave={this.leaveHandler} ></path>
-          <path id='derivLine' stroke='#636363' fill='none' d={this.state.line}></path>
+          <path id='deriveShade' opacity='0' stroke='white' fill='white' d={this.state.shade} onMouseMove={this.tooltipHandler} onMouseEnter={this.enterHandler} onMouseLeave={this.leaveHandler} ></path>
+          <path id='derivLine' stroke='#636363' fill='none' d={this.state.line}>
+            <rect>
+              <title>Hello, World!</title>
+            </rect>
+          </path>
+          
           <CirclePoint 
             x={this.state.circleX}
             y={this.state.circleY}
@@ -71,6 +76,12 @@ class Display extends Component {
         </svg>
         <div id="circleTracker"></div>
         <div id="circleTrackerColor"></div>
+        <div id="attachTooltip">
+          <Tooltip 
+            total={this.props.mainGraphComp.state.total}
+            accumulated={this.props.mainGraphComp.state.accumulated}
+          />
+        </div>
       </div>
     );
   }
@@ -82,9 +93,18 @@ class Display extends Component {
   }
 
   leaveHandler(e) {
+    
     document.getElementById('deriveShade').style.fill = 'white';
     document.getElementById('deriveShade').style.stroke = 'white';
     document.getElementById('deriveShade').style.opacity = '0';
+    document.getElementById('tooltip').style.display = `none`
+  }
+
+  tooltipHandler(e) {
+    document.getElementById('tooltip').style.display = `block`
+    document.getElementById('tooltip').style.bottom = `${494 - e.screenY * (704/630)}px`
+    document.getElementById('tooltip').style.left = `${7 + e.screenX * (704/630)}px`;
+    console.log(e.screenY);
   }
 
   trackerMoveHandler(e) {
@@ -97,9 +117,13 @@ class Display extends Component {
     }
 
     let newDate = moment([this.state.firstDate.getFullYear(), this.state.firstDate.getMonth(), this.state.firstDate.getDate()]);
+
+    let accumulated = this.props.appsPerDay.slice(0, selectedDay + 1).reduce((accum, element) => {
+      return (accum + element);
+    });
    
    newDate.add(selectedDay, 'days');
-    this.props.mainGraphComp.setState({showWeeklySum : this.props.yValues[selectedDay], showDate : JSON.stringify(newDate)})
+    this.props.mainGraphComp.setState({showWeeklySum : this.props.yValues[selectedDay], showDate : JSON.stringify(newDate), accumulated : accumulated, appliedOnDay : this.props.appsPerDay[selectedDay]})
     // this.props.mainGraphComp.setState({showWeeklySum : this.props.yValues[selectDay], showDate : });
     // this.setState
   }

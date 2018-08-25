@@ -29,7 +29,12 @@ class HasApplications extends Component {
       xRange : null,
       showWeeklySum : null,
       showCompany : null,
-      showDate : null
+      showDate : null,
+      appsPerDay : [],
+      accumulated : 0,
+      total : 0,
+      appliedOnDay : 0,
+      daysSinceFirst : 0
     }
   }
 
@@ -54,14 +59,19 @@ class HasApplications extends Component {
       currentMoment = moment([element.getFullYear(), element.getMonth(), element.getDate()]);
       return currentMoment.diff(firstMoment, 'days');
     }).sort((a, b) => {return a - b});
-    let yValues = this.produceDerivative(eachAppDay);
+    let dummy = this.produceDerivative(eachAppDay);
+    let yValues = dummy[0];
+    let appsPerDay = dummy[1];
+    let total = appsPerDay.reduce((accum, element) => {
+      return (accum + element);
+    });
     let yMax = yValues.reduce((accum, element) => {
       if (element > accum) { return element } else { return accum }
     });
     yMax = Math.floor(yMax * 1.25) + (4 - (Math.floor(yMax * 1.25)) % 4);
     let yInterval = yMax / 4;
     let yArray = [0, yInterval, 2 * yInterval, 3 * yInterval, 4 * yInterval];
-    return [yArray, yValues];
+    return [yArray, yValues, total, appsPerDay];
   }
 
   produceDerivative (eachApp) {
@@ -104,7 +114,7 @@ class HasApplications extends Component {
       // console.log(output1.slice(last - n, last));
       n--;
     };
-    return output2;
+    return [output2, output1];
     // return derivatives
   }
 
@@ -194,6 +204,7 @@ class HasApplications extends Component {
           yMax={this.state.yAxisValues[0]}
           dayRange={this.state.xRange}
           mainGraphComp={this}
+          appsPerDay={this.state.appsPerDay}
         />
       , document.getElementById('attachDisplay'));
 
@@ -234,7 +245,7 @@ class HasApplications extends Component {
       let yAxisValues = this.produceYAxisArray();
         if (yAxisValues !== undefined) {
           let yAxisValuesReversed = yAxisValues[0].reverse();
-          this.setState({ yAxisValues : yAxisValuesReversed, yMin : yAxisValues[0][0], yRange : yAxisValues[0].length, yValues : yAxisValues[1], yTrigger : true });
+          this.setState({ yAxisValues : yAxisValuesReversed, yMin : yAxisValues[0][0], yRange : yAxisValues[0].length, yValues : yAxisValues[1], yTrigger : true, total : yAxisValues[2], appsPerDay : yAxisValues[3]});
         }
       
       }
@@ -247,6 +258,8 @@ class HasApplications extends Component {
         <Description
           date={this.state.showDate}
           weeklySum={this.state.showWeeklySum}
+          accumulated={this.state.accumulated}
+          total={this.state.total}
         />
       , document.getElementById('attachDescription'));
   }
