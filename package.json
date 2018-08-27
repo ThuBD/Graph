@@ -27,7 +27,6 @@
     "body-parser": "^1.18.3",
     "enzyme": "^3.3.0",
     "express": "^4.16.3",
-    "express-limit": "0.0.2",
     "faker": "^4.1.0",
     "jest": "^23.4.1",
     "jquery": "^3.3.1",

@@ -68,7 +68,6 @@ class Display extends Component {
               <title>Hello, World!</title>
             </rect>
           </path>
-          
           <CirclePoint 
             x={this.state.circleX}
             y={this.state.circleY}
@@ -76,7 +75,6 @@ class Display extends Component {
         </svg>
         <div id="circleTracker"></div>
         <div id="circleTrackerColor"></div>
-        
       </div>
     );
   }
@@ -88,7 +86,6 @@ class Display extends Component {
   }
 
   leaveHandler(e) {
-    
     document.getElementById('deriveShade').style.fill = 'white';
     document.getElementById('deriveShade').style.stroke = 'white';
     document.getElementById('deriveShade').style.opacity = '0';
@@ -100,7 +97,6 @@ class Display extends Component {
   //   document.getElementById('tooltip').style.bottom = `${494 - e.screenY * (704/630)}px`
   //   document.getElementById('tooltip').style.left = `${7 + e.screenX * (704/630)}px`;
   // }
-
   trackerMoveHandler(e) {
     // this.setState((e.screenX - 57) * (704 / 630));
     document.getElementById('circleTrackerColor').style.width = `${(e.screenX - 57) * (704 / 630)}px`;

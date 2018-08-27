@@ -28,3 +28,4 @@ CREATE TABLE jobs (
   cover_letter text,
   personal_rating DECIMAL(2,1)
 );
+

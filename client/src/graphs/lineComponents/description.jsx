@@ -8,7 +8,6 @@ class Description extends Component {
   }
 
   componentDidMount () {
-
   }
 
   componentDidUpdate () {

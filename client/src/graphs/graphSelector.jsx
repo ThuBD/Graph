@@ -42,6 +42,7 @@ class GraphSelector extends Component {
       React.createElement(this.state.componentDisplay, {data : this.state.data, offerCount : this.state.offerCount}), document.getElementById('graphDisplay'))
   }
 
+
   makeData (jobs) {
     let offerCount = 0;
     $.ajax({

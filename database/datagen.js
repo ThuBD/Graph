@@ -12,6 +12,7 @@ let created_atArray = [null];
 
 let createUsers = function() {
   for (let i = 1; i <= 200000; i++) {
+
     let randomY = Math.floor(9 * Math.random());
     let randomM = Math.ceil(12 * Math.random());
     let randomD = Math.ceil(29 * Math.random());
@@ -120,3 +121,4 @@ let createJobs = function(created_atArray) {
 // getCreatedAt(created_atArray);
 // setTimeout(() => {createJobs(created_atArray)}, 115000);
 //***************
+

@@ -235,7 +235,7 @@ class HasApplications extends Component {
         this.renderComponentsIfMetCondition();
       }
     };
-    
+
       ReactDOM.render(
         <Description
           date={this.state.showDate}
