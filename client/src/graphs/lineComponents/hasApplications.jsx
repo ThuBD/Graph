@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'jquery';
 import moment from 'moment'
 import YAxis from './yAxis.jsx';
 import XAxis from './xAxis.jsx';
@@ -12,6 +13,8 @@ import Description from './description.jsx';
 class HasApplications extends Component {
   constructor(props) {
     super(props);
+    this.produceYAxisArray = this.produceYAxisArray.bind(this);
+    this.produceDerivative = this.produceDerivative.bind(this);
     this.state = {
       companies : [],
       datesApplied : [],
@@ -20,6 +23,7 @@ class HasApplications extends Component {
       yValues : [],
       xAxisValues : [],
       lastDay : null, // in actual practice, this will be collected by getting current date on use. for now, last heard was arbitraily chosen. 
+      dummy : [],
       xTrigger : false,
       yTrigger : false,
       yMin : null,
@@ -46,6 +50,7 @@ class HasApplications extends Component {
     // minY will be 0
     // maxY will be highest value in points + 20%
     // use decideSizeOfYAxis and produce YAxis with correct interval
+    let dummy;
     let currentAvg = 0;
     let currentDay = null;
     let currentMoment = null;
@@ -59,63 +64,40 @@ class HasApplications extends Component {
       currentMoment = moment([element.getFullYear(), element.getMonth(), element.getDate()]);
       return currentMoment.diff(firstMoment, 'days');
     }).sort((a, b) => {return a - b});
-    let dummy = this.produceDerivative(eachAppDay);
-    let yValues = dummy[0];
-    let appsPerDay = dummy[1];
-    let total = appsPerDay.reduce((accum, element) => {
-      return (accum + element);
-    });
-    let yMax = yValues.reduce((accum, element) => {
-      if (element > accum) { return element } else { return accum }
-    });
-    yMax = Math.floor(yMax * 1.25) + (4 - (Math.floor(yMax * 1.25)) % 4);
-    let yInterval = yMax / 4;
-    let yArray = [0, yInterval, 2 * yInterval, 3 * yInterval, 4 * yInterval];
-    return [yArray, yValues, total, appsPerDay];
+    this.produceDerivative(eachAppDay);
+    dummy = this.state.dummy;
+    if (dummy.length > 0) {
+      let yValues = dummy[0];
+      let appsPerDay = dummy[1];
+      let total = appsPerDay.reduce((accum, element) => {
+        return (accum + element);
+      });
+      let yMax = yValues.reduce((accum, element) => {
+        if (element > accum) { return element } else { return accum }
+      });
+      yMax = Math.floor(yMax * 1.25) + (4 - (Math.floor(yMax * 1.25)) % 4);
+      let yInterval = yMax / 4;
+      let yArray = [0, yInterval, 2 * yInterval, 3 * yInterval, 4 * yInterval];
+      console.log('state updated ', this);
+      return [yArray, yValues, total, appsPerDay]; 
+    }
   }
 
   produceDerivative (eachApp) {
     // return a single calculated y value, which will be pushed to derivatives array
     // need Apps count from last 7 days
-    let current = 0;
-    let count = 0;
-    let output1 = [];
-    let output2 = [];
-    eachApp.forEach((element, index) => {
-      if (current === element) {
-        count++;
-      } else if (element - current === 1) {
-        output1.push(count);
-        count = 1;
-        current = element;
-      } else {
-        output1.push(0);
-        current = element;
+    $.ajax({
+      url: `http://localhost:2807/dataProcessing/lineGraph/yAxis/derivative`,
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(eachApp),
+      success: (data) => {
+        this.setState({dummy : data});
+      },
+      error: (error) => {
+        console.log('Failed to access the data base : ', error);
       }
-    });
-    output1.push(count);
-    let n;
-    for (let i = 0; i < output1.length; i++) {
-      n = 6;
-      while (i - n < 0) {
-        n--;
-      }
-      // console.log(output1.slice(i - n, i + 1))
-      output2.push(output1.slice(i - n, i + 1).reduce((accum, elem) => {
-        return (accum + elem)
-      }));
-    };
-    n = 6;
-    let last = output1.length;
-    while (last - n < last) {
-      output2.push(output1.slice(last - n, last).reduce((accum, elem) => {
-        return (accum + elem)
-      }));
-      // console.log(output1.slice(last - n, last));
-      n--;
-    };
-    return [output2, output1];
-    // return derivatives
+    }) 
   }
 
   produceXAxisArray () {
@@ -253,7 +235,7 @@ class HasApplications extends Component {
         this.renderComponentsIfMetCondition();
       }
     };
-
+    
       ReactDOM.render(
         <Description
           date={this.state.showDate}

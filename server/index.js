@@ -39,10 +39,15 @@ app.get('/jobs/:id', (req, res) => {
 });
 
 app.post('/dataProcessing/getData', (req, res) => {
-  let data = dataProcessing.getData(req.body);
+  let offerCount = 0;
+  let data = dataProcessing.getData(req.body, offerCount);
   res.json(data);
 });
 
+app.post('/dataProcessing/lineGraph/yAxis/derivative', (req, res) => {
+  let output = dataProcessing.getDerivative(req.body);
+  res.json(output);
+});
 
 
 app.listen(port, function() {

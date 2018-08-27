@@ -64,7 +64,7 @@
 
 #attachDescription {
   position : relative;
-  top : 430px;
+  top : 380px;
 }
 
 #circleTracker {
@@ -80,13 +80,14 @@
   position : relative;
   top : 6.5mm;
   left : 72px;
-  background-color : #e2e2e2;
+  border-right : 2px solid #a0a0a0;
+  background-color : white;
   width : 0px;
   height : 79.4mm;
   z-index : 0;
 }
 
-#tooltip {
+/*#tooltip {
   display : none;
   z-index : 2;
   background-color : #e5e5e5;
@@ -102,3 +103,4 @@
   left : 2px;
   fill : #e5e5e5;
 }
+*/

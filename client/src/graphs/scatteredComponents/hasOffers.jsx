@@ -180,8 +180,9 @@ class HasOffers extends Component {
     let datesApplied = [];
     let datesHeard = [];
     let salaries = [];
+    console.log(this.props.data);
     this.props.data.forEach((element) => {
-      if (element.status === 'accepted') {
+      if (element.status === 'offer') {
         companies.push(element.company);
         datesApplied.push(element.dateApp);
         datesHeard.push(element.dateHeard);
