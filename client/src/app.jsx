@@ -13,7 +13,8 @@ class App extends React.Component {
     this.fetchFakeJobsData = this.fetchFakeJobsData.bind(this);
     this.state = {
       user_obj : {},
-      jobs_array : []
+      jobs_array : [],
+      loaded_jobs : false
     }
   }
 
@@ -24,13 +25,16 @@ class App extends React.Component {
 
   }
 
+  componentDidUpdate () {
+    if (this.state.loaded_jobs) {
+      ReactDOM.render(
+        React.createElement(GraphSelect, {userObj : this.state.user_obj, jobsArray : this.state.jobs_array}), document.getElementById('graphsService'))
+    }
+  }
+
   render () {
     return (
       <div id="graphsService">
-      <GraphSelect 
-        userObj = {this.state.user_obj}
-        jobsArray = {this.state.jobs_array}
-      />
       </div> 
     )
   }
@@ -39,7 +43,6 @@ class App extends React.Component {
     let user_id;
     user_id = prompt("enter user id to test!");
     user_id = Number(user_id);
-    console.log(user_id, typeof user_id);
     while (user_id === undefined || isNaN(user_id) || user_id < 1 || user_id > 200000) {
       user_id = prompt(`Invalid input ${user_id}. Input must be a number between 1 to 200000! enter user id to test!`);
       user_id = Number(user_id);
@@ -54,6 +57,7 @@ class App extends React.Component {
       type: 'GET',
       contentType: 'application/json',
       success: (data) => {
+        console.log(this.state)
         this.setState({
           user_obj : data
         });
@@ -71,7 +75,8 @@ class App extends React.Component {
       contentType: 'application/json',
       success: (data) => {
         this.setState({
-          user_obj : data
+          jobs_array : data,
+          loaded_jobs : true
         });
       },
       error: (error) => {

@@ -2,13 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const db = require('../database/queries.js');
+const dataProcessing = require('./dataProcessing/dataProcessing.js');
 
 let port = process.env.PORT || 2807;
 let app = express();
 
 app.use(express.static(__dirname + '/../public'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 100000}));
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -35,6 +36,11 @@ app.get('/jobs/:id', (req, res) => {
       res.json(result.rows);
     }
   });
+});
+
+app.post('/dataProcessing/getData', (req, res) => {
+  let data = dataProcessing.getData(req.body);
+  res.json(data);
 });
 
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import GraphOptions from './graphOptions.jsx';
 import ReactDOM from 'react-dom';
 import faker from 'faker';
+import $ from 'jquery';
 import moment from 'moment';
 import Line from './Line.jsx';
 import Scattered from './Scattered.jsx';
@@ -12,6 +13,7 @@ class GraphSelector extends Component {
   constructor(props) {
     super(props);
     this.optionsHandler = this.optionsClick.bind(this);
+    this.makeData = this.makeData.bind(this);
     this.state = {
       data : [],
       offerCount : 0,
@@ -23,16 +25,20 @@ class GraphSelector extends Component {
         Rate : Rate, 
         Pie : Pie
       },
-      componentDisplay : Line
+      componentDisplay : Line,
+      trigger : false
     }
   }
 
   componentDidMount () {
+    console.log('props ', this.props.userObj, this.props.jobsArray);
+    let data = this.makeData(this.props.jobsArray);
+    console.log('in cdm ', data);
     let randomNumb;
 
     let offerCount = 0;
     let numbApplied = 30 + Math.ceil(300 * Math.random());
-    let data = []
+    data = []
     for (var i = 0; i < numbApplied; i++) {
       randomNumb =  Math.random();
       data[i] = {};
@@ -55,7 +61,10 @@ class GraphSelector extends Component {
         data[i].salary = null;
       }
     }
-    this.setState({data : data, offerCount : offerCount});
+    console.log('build this with props ', data);
+    if (this.state.trigger === false) {
+      this.setState({data : data, offerCount : offerCount, trigger : true});
+    };
   }
 
   componentDidUpdate () {
@@ -63,6 +72,27 @@ class GraphSelector extends Component {
     // should run this once user logs in / changes selected graph
     ReactDOM.render(
       React.createElement(this.state.componentDisplay, {data : this.state.data, offerCount : this.state.offerCount}), document.getElementById('graphDisplay'))
+  }
+
+  makeData (jobs) {
+    let output;
+    $.ajax({
+      url: `http://localhost:2807/dataProcessing/getData`,
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(jobs),
+      success: (data) => {
+        data.forEach((element, index) => {
+          element.dateApp = new Date(element.dateApp);
+          element.dateHeard = new Date(element.dateHeard);
+        })
+        return data;
+      },
+      error: (error) => {
+        console.log('Failed to access the data base : ', error);
+        return
+      }
+    })
   }
 
   optionsClick (e) {
