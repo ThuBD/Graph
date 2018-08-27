@@ -1,0 +1,106 @@
+#graphsService {
+  font-family: 'Muli', sans-serif;
+}
+
+.graphsHead {
+  padding-bottom : 10px;
+  font-size : 25px;
+}
+
+.chartDiv {
+  position: absolute;
+  left : -10px;
+  width : 800px;
+  height : 450px;
+  z-index : 1;
+  padding-top : 0px;
+  border-top : 1px solid black;
+}
+
+.chartContainer {
+  position : relative;
+  width : 700px;
+  height : 300px;
+  z-index : 1;
+  float : left;
+}
+
+.ylabel {
+  position : relative;
+  z-index : 1;
+  float : left;
+  font-size : 12px;
+  top : -5px;
+  left : 15px;
+  padding-top : 28px;
+}
+
+.xs {
+  position: absolute;
+  left : 50px;
+  z-index : 2;
+  float : left;
+  left : 74px;
+  top : 24px;
+  
+  outline : 3px solid #6d6d6d;
+
+}
+
+.axes {
+  position : relative;
+  height : 100%;
+  z-index : 1;
+}
+
+.xlabel {
+  position : relative;
+  z-index : 1;
+  float : left;
+  left : 48px;
+  top : 38px;
+  font-size : 12px;
+}
+
+#attachDescription {
+  position : relative;
+  top : 380px;
+}
+
+#circleTracker {
+  position : absolute;
+  top : 6.5mm;
+  left : 72px;
+  width : 704px;
+  height : 79.4mm;
+  z-index : 0;
+}
+
+#circleTrackerColor {
+  position : relative;
+  top : 6.5mm;
+  left : 72px;
+  border-right : 2px solid #a0a0a0;
+  background-color : white;
+  width : 0px;
+  height : 79.4mm;
+  z-index : 0;
+}
+
+/*#tooltip {
+  display : none;
+  z-index : 2;
+  background-color : #e5e5e5;
+  position: absolute;
+  width : 100px;
+  height : 30px;
+  font-size : 8px;
+}
+
+#tooltipArrow {
+  position : absolute;
+  top : 22px;
+  left : 2px;
+  fill : #e5e5e5;
+}
+*/
