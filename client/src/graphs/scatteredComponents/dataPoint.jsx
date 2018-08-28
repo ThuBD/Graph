@@ -9,11 +9,13 @@ class DataPoint extends Component {
     this.state = {
       // 700 px x 300 px
       x : -100,
-      y : -100
+      y : -100,
+      color : "#FFDD58"
     }
   }
 
   enterHandler(e) {
+    this.props.getDifference(this.props.expectedSalary, this.props.salary);
     this.props.mainGraphComp.setState({showDescription : true, showCompany : this.props.company, showDate : this.props.date, showMore : 'This feature to be improved!! =)', showSalary : this.props.salary});
   }
 
@@ -34,12 +36,18 @@ class DataPoint extends Component {
     let yMultiplier = (this.props.salary - this.props.yMin) / this.props.yRange;
     let xMultiplier = dayDiff/totDiff;
     this.setState({x : 700 * xMultiplier, y : 300 * (1 - yMultiplier)});
+    if (this.props.salary > (1.05 * this.props.expectedSalary)) {
+      this.setState({color : '#63c9ff'})
+    } else if (this.props.salary < (0.95 * this.props.expectedSalary)) {
+      this.setState({color : '#DC8C8C'})
+    }
+
   }
 
   render () {
     return (
       <g onMouseEnter={this.enterHandler} onMouseLeave={this.leaveHandler} transform={"translate(" + (this.state.x) + ", " + (this.state.y) + ")"}>
-        <circle r="9" fill="#63c9ff" className={"dataPoint" + this.props.ind + ', estCircle'} />
+        <circle r="9" fill={this.state.color} className={"dataPoint" + this.props.ind + ', estCircle'} />
       </g>
     )
   }

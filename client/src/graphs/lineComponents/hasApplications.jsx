@@ -33,8 +33,9 @@ class HasApplications extends Component {
       xRange : null,
       showWeeklySum : null,
       showCompany : null,
-      showDate : null,
+      showDate : `${(new Date()).getFullYear()}-${(new Date()).getMonth() + 1}-${(new Date()).getDate()}`,
       appsPerDay : [],
+      showCompanies : '',
       accumulated : 0,
       total : 0,
       appliedOnDay : 0,
@@ -242,6 +243,9 @@ class HasApplications extends Component {
           weeklySum={this.state.showWeeklySum}
           accumulated={this.state.accumulated}
           total={this.state.total}
+          data={this.props.data}
+          mainGraphComp={this}
+          companies={this.state.showCompanies}
         />
       , document.getElementById('attachDescription'));
   }

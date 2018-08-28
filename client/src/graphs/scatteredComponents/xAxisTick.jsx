@@ -8,7 +8,7 @@ class XAxisTick extends Component {
   componentDidMount() {
     document.getElementById("x-" + this.props.ind).style.width = "48px";
     document.getElementById("x-" + this.props.ind).style.position = "absolute";
-    document.getElementById("x-" + this.props.ind).style.left = `${this.props.factor * 800}px`;
+    document.getElementById("x-" + this.props.ind).style.left = `${this.props.factor * (700 * (1 + this.props.factorTwo))}px`;
     document.getElementById("x-" + this.props.ind).style.zIndex = "1";
   }
   

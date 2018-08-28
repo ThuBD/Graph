@@ -20,6 +20,7 @@ class DataPoints extends Component {
             return (
               <DataPoint
                 salary={Number(yVal.substring(1))}
+                expectedSalary={Number(this.props.expectedSalaries[index].substring(1))}
                 date={new Date(Number(this.props.x[index]))}
                 company={this.props.name[index]}
                 yMin={this.props.yMin}
@@ -29,6 +30,7 @@ class DataPoints extends Component {
                 xRange={this.props.xRange}
                 ind={index + 1}
                 mainGraphComp={this.props.mainGraphComp}
+                getDifference={this.props.getDifference}
               />
             );
           })}

@@ -8,6 +8,7 @@ class Description extends Component {
   }
 
   componentDidMount () {
+    document.getElementById('salaryDeviation').style.color = `${this.props.salaryColor}`;
   }
 
   // renders entire earnings section with YAxis, DataPoints, XAxis, and Descriptions as subcomponents
@@ -18,7 +19,10 @@ class Description extends Component {
         Company : {this.props.company}
         </div>
         <div>
-        Salary : {'$' + this.props.salary}
+        Offered Salary : {'$' + this.props.salary}
+        </div>
+        <div>
+        Deviation from Expected : <strong><i id='salaryDeviation'>{`${this.props.salaryDifference} (${this.props.salaryPercentage})`}</i></strong>
         </div>
         <div>
         Offer Date : {(this.props.date.getMonth() + 1) + '/' + this.props.date.getDate() + '/' + this.props.date.getFullYear()}

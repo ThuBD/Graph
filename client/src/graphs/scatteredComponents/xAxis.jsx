@@ -15,6 +15,7 @@ class XAxis extends Component {
               xValue={date}
               ind={index + 1}
               factor={index / this.props.values.length}
+              factorTwo={1 / (this.props.values.length - 1)}
             />
           );
         })}

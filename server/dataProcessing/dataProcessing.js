@@ -9,6 +9,7 @@ const getData = (jobs, offerCount) => {
       company : job.company_name.substring(1),
       status : job.status.substring(1),
       salary : job.offered_salary.substring(1),
+      expectedSalary : job.expected_salary.substring(1)
     };
   }), offerCount];
 };
