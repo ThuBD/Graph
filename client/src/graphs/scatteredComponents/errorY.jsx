@@ -7,7 +7,7 @@ class ErrorY extends Component {
   
   render () {
     return (
-      <div>
+      <div id='errorMessage'>
         Not enough salary difference to produce a graph
       </div>
     );

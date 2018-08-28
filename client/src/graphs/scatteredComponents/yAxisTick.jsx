@@ -7,7 +7,7 @@ class YAxisTick extends Component {
 
   componentDidMount () {
     document.getElementById("y-" + this.props.ind).style.position = "absolute";
-    document.getElementById("y-" + this.props.ind).style.top = `${this.props.factor * 355}px`;
+    document.getElementById("y-" + this.props.ind).style.top = `${this.props.factor * (300 * (1 + this.props.factorTwo))}px`;
     document.getElementById("y-" + this.props.ind).style.right = "-100%";
     document.getElementById("y-" + this.props.ind).style.zIndex = "1";
     document.getElementById("y-" + this.props.ind).style.paddingTop = "25px";

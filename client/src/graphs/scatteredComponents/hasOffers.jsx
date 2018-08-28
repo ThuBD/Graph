@@ -6,15 +6,18 @@ import XAxis from './xAxis.jsx';
 import DataPoints from './dataPoints.jsx';
 import Description from './description.jsx';
 import BlankDescription from './blankDescription.jsx';
+import ErrorY from './errorY.jsx';
 
 class HasOffers extends Component {
   constructor(props) {
     super(props);
+    this.getSalaryDifference = this.getSalaryDifference.bind(this);
     this.state = {
       companies : [],
       datesApplied : [],
       datesHeard : [],
       salaries : [],
+      expectedSalaries : [],
       yAxisValues : [],
       xAxisValues : [],
       trigger : false,
@@ -27,7 +30,10 @@ class HasOffers extends Component {
       showCompany : null,
       showDate : null,
       showSalary : null,
-      showMore : null
+      showMore : null,
+      showSalaryDifference : '',
+      showSalaryPercentage : null,
+      salaryColor : 'black'
     }
   }
 
@@ -42,7 +48,7 @@ class HasOffers extends Component {
     maxY = Math.round((maxY + padding)/10000) * 10000;
 
     let difference = maxY - minY;
-    let yAxisSize = this.decideSizeOfYAxis();
+    let yAxisSize = this.decideSizeOfYAxis(difference);
 
     if (yAxisSize === 0) {
       this.renderYComponentsIfMetCondition();
@@ -53,6 +59,12 @@ class HasOffers extends Component {
       for (let i = yAxisSize; i >= 0; i--) {
         output.push('$' + String(minY + i * interval));
       }
+      output.forEach((element, index) => {
+        let dotIndex = element.indexOf('.');
+        if (dotIndex >= 0) {
+          output[index] = element.substring(0, dotIndex);
+        }
+      })
       return [output, Number(output[output.length - 1].substring(1)), (maxY - minY)];
     }
   }
@@ -79,7 +91,7 @@ class HasOffers extends Component {
     let dayRange = maxMoment.diff(minMoment, 'days');
 
     // make sure data are more than a day apart
-    if (dayRange > 1) {
+    if (dayRange > 1 && (document.getElementById('attachYAxis') !== null)) {
       this.renderXComponentsIfMetCondition();
     }
 
@@ -158,6 +170,7 @@ class HasOffers extends Component {
         <DataPoints 
           x={this.state.datesHeard}
           y={this.state.salaries}
+          expectedSalaries={this.state.expectedSalaries}
           name={this.state.companies}
           yMin={this.state.yMin}
           xMin={this.state.xMin}
@@ -165,6 +178,7 @@ class HasOffers extends Component {
           yRange={this.state.yRange}
           xRange={this.state.xRange}
           mainGraphComp={this}
+          getDifference={this.getSalaryDifference}
         />
       , document.getElementById('attachDataPoints'));
 
@@ -180,21 +194,24 @@ class HasOffers extends Component {
     let datesApplied = [];
     let datesHeard = [];
     let salaries = [];
-    console.log(this.props.data);
+    let expectedSalaries = [];
     this.props.data.forEach((element) => {
       if (element.status === 'offer') {
         companies.push(element.company);
         datesApplied.push(element.dateApp);
         datesHeard.push(element.dateHeard);
         salaries.push(element.salary);
+        expectedSalaries.push(element.expectedSalary);
       };
     });
     this.setState({
       companies : companies,
       datesApplied : datesApplied,
       datesHeard : datesHeard,
-      salaries : salaries
+      salaries : salaries,
+      expectedSalaries : expectedSalaries
     });
+    this.getSalaryDifference()
   }
 
   componentDidUpdate () {
@@ -213,6 +230,9 @@ class HasOffers extends Component {
           date={this.state.showDate}
           showMore={this.state.showMore}
           salary={this.state.showSalary}
+          salaryDifference={this.state.salaryDifference}
+          salaryColor={this.state.salaryColor}
+          salaryPercentage={this.state.showSalaryDifference}
         />
       , document.getElementById('attachDescription'));
     } else {
@@ -221,6 +241,29 @@ class HasOffers extends Component {
         />
       , document.getElementById('attachDescription'));
     }
+  }
+
+  getSalaryDifference(expected, offered) {
+    let salaryDifference;
+    if (Math.round((offered - expected) * 100)/100 < 0) {
+      salaryDifference = `-$${Math.round((expected - offered) * 100)/100}`
+    } else {
+      salaryDifference = `$${Math.round((offered - expected) * 100)/100}`
+    }
+    
+    let percent = Math.round(((offered - expected) / expected) * 10000) / 100;
+    let color = 'black';
+    if (percent > 5.00) {
+      color = '#63c9ff';
+    } else if (percent < -5.00) {
+      color = '#DC8C8C';
+    };
+    if (percent > 0) {
+      percent = `+${percent}%`
+    } else {
+      percent = `${percent}%`
+    }
+    this.setState({salaryColor : color, salaryDifference : salaryDifference, showSalaryDifference : percent});
   }
 
   // renders entire section with YAxis, DataPoints, XAxis, and Descriptions as subcomponents

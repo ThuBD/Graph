@@ -13,6 +13,7 @@ class Scattered extends Component {
   }
 
   componentDidMount () {
+    console.log(this.props.offerCount);
     if (this.props.offerCount > 1) {
       ReactDOM.render(
         React.createElement(HasOffers, { data: this.props.data, offerCount : this.props.offerCount}), 
